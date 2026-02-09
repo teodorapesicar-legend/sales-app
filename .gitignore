@@ -1,0 +1,25 @@
+# Connection strings 
+appsettings.json
+
+# Build results
+bin/
+obj/
+.vs/
+
+# User-specific files
+*.user
+*.suo
+*.rsuser
+
+# NuGet
+packages/
+*.nupkg
+
+# Visual Studio
+.vscode/
+*.sln.docstates
+.idea/
+
+# Database
+*.mdf
+*.ldf
