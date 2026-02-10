@@ -8,9 +8,11 @@ using System.Linq;
 
 namespace SalesDesktopApp.Services
 {
+    // Manages customer operations with role-based data access
+    // Employees see only their own customers, Managers and Owners see all customers
     public class CustomerService
     {
-        // Add new Customer - everyone can add
+        // Adds a new customer created by the current user - everyone can add
         public void AddCustomer(string firstName, string lastName, string serviceType)
         {
             if (AuthService.CurrentUser == null) return;
@@ -29,9 +31,12 @@ namespace SalesDesktopApp.Services
             db.SaveChanges();
         }
 
-        // Get all Customers with User info - only Manager and Owner can see all
+        // Retrieves all customers from database
+        // Used for Owner and Manager roles
+        // Returns list of all customers with creator information
         public List<Customer> GetAllCustomers()
         {
+            // Only Owner and Manager can see all customers
             if (!AuthService.CanEdit()) return new List<Customer>();
 
             using var db = new AppDbContext();
@@ -40,7 +45,9 @@ namespace SalesDesktopApp.Services
                 .ToList();
         }
 
-        // Get Customers created by current user - everyone can see their own
+        // Retrieves only customers created by the current user
+        // Used for Employee role
+        // Returns list of current user's customers
         public List<Customer> GetMyCustomers()
         {
             if (AuthService.CurrentUser == null) return new List<Customer>();
@@ -52,9 +59,12 @@ namespace SalesDesktopApp.Services
                 .ToList();
         }
 
-        // Edit a Customer - only Manager and Owner can edit
+        // Updates an existing customer
+        // Requires Owner or Manager permissions
+        // Returns true if update successful, false if no permission or customer not found
         public bool UpdateCustomer(int customerId, string firstName, string lastName, string serviceType)
         {
+            // Check permissions (Owner or Manager can edit)
             if (!AuthService.CanEdit()) return false;
 
             using var db = new AppDbContext();
@@ -68,9 +78,12 @@ namespace SalesDesktopApp.Services
             return true;
         }
 
-        // Delete a Customer - only Manager and Owner can delete
+        // Deletes a customer
+        // Requires Owner or Manager permissions
+        // Returns true if deletion successful, false if no permission or customer not found
         public bool DeleteCustomer(int customerId)
         {
+            // Check permissions (Owner or Manager can delete customers)
             if (!AuthService.CanDelete()) return false;
 
             using var db = new AppDbContext();
