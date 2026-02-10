@@ -9,8 +9,9 @@ namespace SalesDesktopApp.Models
 		public decimal Price { get; set; }
 		public DateTime SaleDate { get; set; }
 
-		// Foreign key - Link to Sales table
-		public int UserId { get; set; }
-		public User User { get; set; } = null!;
+        // Foreign key to the user who created this sale
+        public int UserId { get; set; }
+        // Navigation property to the user 
+        public User User { get; set; } = null!;
     }
 }
