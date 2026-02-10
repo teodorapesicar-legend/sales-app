@@ -5,13 +5,14 @@ using System.Windows;
 
 namespace SalesDesktopApp
 {
+    // Application class for the WPF application, handling startup and global exception handling
     public partial class App : Application
     {
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            // Uhvati sve greške
+            // Catch all unhandled exceptions to prevent crashes and show error messages
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
 
             try
@@ -35,7 +36,7 @@ namespace SalesDesktopApp
             MessageBox.Show($"Critical Error:\n{e.Exception.Message}\n\nInner:\n{e.Exception.InnerException?.Message}\n\nStack:\n{e.Exception.StackTrace}",
                 "Application Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-            e.Handled = true; // Spreči zatvaranje
+            e.Handled = true; // Mark exception as handled to prevent app crash
         }
     }
 }
