@@ -7,22 +7,31 @@ using System.Linq.Expressions;
 
 namespace SalesDesktopApp
 {
+    // User registration window.
+    // Used for:
+    // 1. Initial user sign-up (accessed from LoginWindow)
+    // 2. Adding new users by Manager (accessed from MainWindow "Add User" button)
+    // Note: Permission check for manager-only access is enforced in MainWindow.AddUserButton_Click
     public partial class RegisterWindow : Window
     {
         public RegisterWindow()
         {
             InitializeComponent();
-            RoleComboBox.SelectedIndex = 0; // Default Employee
+            RoleComboBox.SelectedIndex = 0; // Default to Employee role
         }
 
+        // Handles user registration with validation and BCrypt password hashing.
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
-            // Validation
+            // Validate all required fields are filled
             if (string.IsNullOrWhiteSpace(UsernameTextBox.Text) ||
                 string.IsNullOrWhiteSpace(PasswordBox.Password) ||
                 string.IsNullOrWhiteSpace(FirstNameTextBox.Text) ||
                 string.IsNullOrWhiteSpace(LastNameTextBox.Text))
-                return; // All fields are required
+            {
+                ErrorTextBlock.Text = "All fields are required!";
+                return; 
+            }
 
             // Check if username already exists
             using (var db = new AppDbContext())
@@ -33,7 +42,7 @@ namespace SalesDesktopApp
                     return;
                 }
 
-                // Create new user
+                // Create new user with hashed password
                 var newUser = new User
                 {
                     Username = UsernameTextBox.Text,
