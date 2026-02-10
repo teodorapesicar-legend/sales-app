@@ -9,10 +9,12 @@ using System;
 
 namespace SalesDesktopApp.Services
 {
-	public class SalesService
+    // Manages Sales operations with role-based data access
+    // Employees can add sales and view their own sales, Managers and Owners can view and manage all sales
+    public class SalesService
 	{
-		// Add a new Sale
-		public void AddSale(string articleName, decimal price)
+        // Add a new sale for currently logged-in user
+        public void AddSale(string articleName, decimal price)
 		{
 			if (AuthService.CurrentUser == null) return;
 
@@ -29,17 +31,21 @@ namespace SalesDesktopApp.Services
 			db.SaveChanges();
 		}
 
-		// Get all Sales with User info
-		public List<Sale> GetAllSales()
+        // Retrives all sales from the database
+        // Used for Owner and Manager roles
+        // Returns  list of all sales with associated user information
+        public List<Sale> GetAllSales()
 		{
 			using var db = new AppDbContext();
 			return db.Sales
-				.Include(s => s.User)
-				.ToList();
+				.Include(s => s.User) // Load user data in same query for efficiency
+                .ToList();
 		}
 
-		// Get Sales by Current User
-		public List<Sale> GetMySales()
+        // Retrives sales created by the currently logged-in user
+        // Used for Employee role
+		// Returns list of curent user's sales
+        public List<Sale> GetMySales()
 		{
 			using var db = new AppDbContext();
 			return db.Sales
@@ -48,9 +54,12 @@ namespace SalesDesktopApp.Services
 				.ToList();
 		}
 
-		// Edit a Sale
-		public bool UpdateSale(int saleId, string ArticleName, decimal Price)
+        // Updates an existing sale
+        // Requires Owner or Manager permissions
+        // Returns true if update successful, false if sale not found or user lacks permissions
+        public bool UpdateSale(int saleId, string ArticleName, decimal Price)
 		{
+            // Check permissions (Owner or Manager can edit)
             if (!AuthService.CanEdit()) return false;
 
             using var db = new AppDbContext();
@@ -63,10 +72,13 @@ namespace SalesDesktopApp.Services
 			return true;
 		}
 
-		// Delete a Sale
-		public bool DeleteSale(int saleId)
+        // Deletes a sale
+        // Requires Owner or Manager permissions
+        // Returns true if deletion successful, false if sale not found or user lacks permissions
+        public bool DeleteSale(int saleId)
 		{
-			if (!AuthService.CanDelete()) return false;
+            // Check permissions (Owner or Manager can delete)
+            if (!AuthService.CanDelete()) return false;
 
             using var db = new AppDbContext();
 			var sale = db.Sales.Find(saleId);
