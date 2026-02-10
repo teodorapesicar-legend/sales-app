@@ -37,10 +37,11 @@ namespace SalesDesktopApp
             }
         }
 
+        // Opens registration window for new user sign-up
         private void RegisterLink_Click(object sender, RoutedEventArgs e)
         {
             RegisterWindow registerWindow = new RegisterWindow();
-            registerWindow.ShowDialog(); // ShowDialog = modal window (wait to close)
+            registerWindow.ShowDialog(); // Open as modal dialog
         }
     }
 }
