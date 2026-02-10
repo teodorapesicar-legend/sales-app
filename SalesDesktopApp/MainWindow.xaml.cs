@@ -11,6 +11,8 @@ namespace SalesDesktopApp
         private SalesService _salesService = new SalesService();
         private CustomerService _customerService = new CustomerService();
         private AuthService _authService = new AuthService();
+
+        // Track selected sale and customer IDs for edit/delete operations
         private int _selectedSaleId = 0;
         private int _selectedCustomerId = 0;
 
@@ -19,9 +21,9 @@ namespace SalesDesktopApp
             InitializeComponent();
         }
 
+        // Display current user info in header
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // Show current user info
             if (AuthService.CurrentUser != null)
             {
                 UserInfoTextBlock.Text = $"User: {AuthService.CurrentUser.Username} ({AuthService.CurrentUser.Role})";
@@ -30,17 +32,17 @@ namespace SalesDesktopApp
             LoadSales();
             LoadCustomers();
 
-            // Collapse AddUserButton if not Manager
+            // Hide "Add User" button for non-managers
             AddUserButton.Visibility = AuthService.CurrentUser?.Role == UserRole.Manager
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
         }
-
+        // Load sales based on user role:
+        // - Employee: only their own sales
+        // - Owner/Manager: all sales
         private void LoadSales()
         {
-            // Manager and Owner see all sales
-            // Employee sees only their sales
             if (AuthService.CurrentUser?.Role == UserRole.Employee)
             {
                 SalesDataGrid.ItemsSource = _salesService.GetMySales();
@@ -62,7 +64,7 @@ namespace SalesDesktopApp
             // Only Owner and Manager can Delete
             DeleteButton.IsEnabled = AuthService.CanDelete();
         }
-
+        
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(ArticleNameTextBox.Text) ||
@@ -87,6 +89,7 @@ namespace SalesDesktopApp
             LoadSales();
         }
 
+        // Edit button click handler - only for Owner and Manager
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedSaleId == 0)
@@ -124,6 +127,7 @@ namespace SalesDesktopApp
             }
         }
 
+        // Delete button click handler - only for Owner and Manager
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedSaleId == 0)
@@ -176,6 +180,9 @@ namespace SalesDesktopApp
             SalesDataGrid.SelectedItem = null;
         }
 
+        // Load customers based on user role:
+        // - Employee: only customers they created
+        // - Owner/Manager: all customers
         private void LoadCustomers()
         {
             if (AuthService.CurrentUser?.Role == UserRole.Employee)
@@ -188,6 +195,7 @@ namespace SalesDesktopApp
             }
         }
 
+        // Add customer button click handler - everyone can add customers
         private void AddCustomerButton_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(CustomerFirstNameTextBox.Text) ||
@@ -209,6 +217,7 @@ namespace SalesDesktopApp
             LoadCustomers();
         }
 
+        // Edit customer button click handler - only for Owner and Manager
         private void UpdateCustomerButton_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedCustomerId == 0)
@@ -244,6 +253,7 @@ namespace SalesDesktopApp
             }
         }
 
+        // Delete customer button click handler - only for Owner and Manager
         private void DeleteCustomerButton_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedCustomerId == 0)
@@ -318,9 +328,9 @@ namespace SalesDesktopApp
             SalesDataGrid.SelectedItem = null;
         }
 
+        // Add User button click handler - only for Manager
         private void AddUserButton_Click(object sender, RoutedEventArgs e)
         {
-            // Only Manager can add new users
             if (AuthService.CurrentUser?.Role != UserRole.Manager)
             {
                 MessageBox.Show("Only Manager can add new users!",
@@ -332,9 +342,26 @@ namespace SalesDesktopApp
             registerWindow.ShowDialog();
         }
 
+        // Event handler to capitalize the first letter of the article name as the user types
         private void ArticleNameTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            // You can leave this empty or add logic as needed
+            if (!string.IsNullOrEmpty(ArticleNameTextBox.Text))
+            {
+                // Get current cursor position before changing text
+                int selectionStart = ArticleNameTextBox.SelectionStart;
+
+                // Capitalizing the first letter of the article name
+                string text = ArticleNameTextBox.Text;
+                string capitalized = char.ToUpper(text[0]) + text.Substring(1);
+
+                // Updating if the text has changed after capitalization to prevent infinite loop
+                if (ArticleNameTextBox.Text != capitalized)
+                {
+                    ArticleNameTextBox.Text = capitalized;
+                    // Restoring the cursor position after text change
+                    ArticleNameTextBox.SelectionStart = selectionStart;
+                }
+            }
         }
     }
 }
