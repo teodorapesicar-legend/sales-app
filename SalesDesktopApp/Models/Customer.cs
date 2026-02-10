@@ -12,9 +12,10 @@ namespace SalesDesktopApp.Models
         public required string ServiceType { get; set; }
             public DateTime DateCreated { get; set; }
 
-        //Created by User
+        // Foreign key to the user who created this customer
         public int CreatedByUserId { get; set; }
-            public User CreatedByUser { get; set; } = null!;
+        // Navigation property to the user who created this customer
+        public User CreatedByUser { get; set; } = null!;
 
 
     }
