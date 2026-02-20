@@ -243,7 +243,7 @@ This application implements **three-tier role-based access control**:
 | Role | View All Data | Add | Edit | Delete Sales | Delete Customers | Manage Users |
 |------|---------------|-----|------|--------------|------------------|--------------|
 | **Employee** | ❌ (own only) | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Owner** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Owner** | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
 | **Manager** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 **Key Features Shown:**
