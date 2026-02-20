@@ -185,6 +185,76 @@ Users (1) ──────< (N) Customers
 
 ---
 
+## Screenshots
+
+### Login & Authentication
+
+![Login Window](screenshots/01-login-window.png)
+*Secure login with BCrypt password hashing. New users can sign up via the link below the login form.*
+
+---
+
+### Manager View (Full Permissions)
+
+![Manager - All Sales View](screenshots/02-manager-all-sales.png)
+*Managers can view all sales from all users in the system*
+
+![Manager - Add New User](screenshots/03-manager-add-user.png)
+*Only managers can add new users to the system (Employee/Owner/Manager roles)*
+
+![User Added Successfully](screenshots/04-user-added-success.png)
+*Confirmation message after successful user creation*
+
+![Manager - Update Sale](screenshots/05-manager-update-sale.png)
+*Manager editing a sale - Update button is enabled*
+
+![Manager - Delete Sale Confirmation](screenshots/06-manager-delete-sale.png)
+*Confirmation dialog before deleting a sale (Manager only)*
+
+---
+
+### Customer Management
+
+![Customers Tab](screenshots/07-customers-tab.png)
+*Customer management interface with First Name, Last Name, Service Type, and Created By columns*
+
+![Manager - Update Customer](screenshots/08-manager-update-customer.png)
+*Editing customer information - form populated with selected customer data*
+
+![Manager - Delete Customer Confirmation](screenshots/09-manager-delete-customer.png)
+*Confirmation dialog before deleting a customer*
+
+---
+
+### Employee View (Restricted Permissions)
+
+![Employee - Own Sales Only](screenshots/10-employee-own-sales.png)
+*Employees can only see sales they created - notice "User: Tea (Employee)" in header*
+
+![Employee - No Edit/Delete Buttons](screenshots/11-employee-no-buttons.png)
+*Update and Delete buttons are disabled/hidden for employees - demonstrating role-based UI control*
+
+---
+
+### Role-Based Access Control Summary
+
+This application implements **three-tier role-based access control**:
+
+| Role | View All Data | Add | Edit | Delete Sales | Delete Customers | Manage Users |
+|------|---------------|-----|------|--------------|------------------|--------------|
+| **Employee** | ❌ (own only) | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **Owner** | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ |
+| **Manager** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+**Key Features Shown:**
+- ✅ **UI-level security**: Buttons hidden/disabled based on role
+- ✅ **Server-side validation**: Backend enforces permissions
+- ✅ **User context display**: Header shows current user and role
+- ✅ **Confirmation dialogs**: Prevent accidental deletions
+- ✅ **Success notifications**: Visual feedback for all operations
+
+---
+
 ## Troubleshooting
 
 ### "Unable to connect to database"
@@ -221,24 +291,46 @@ Users (1) ──────< (N) Customers
 
 ## Project Structure
 ```
-SalesDesktopApp/
+sales-app/
+├── .gitignore
+├── README.md
+├── SalesApp.slnx               # Solution file
+├── screenshots/                # Application UI screenshots
+│   ├── 01-login-window.png
+│   ├── 02-manager-all-sales.png
+│   ├── 03-manager-add-user.png
+│   ├── 04-user-added-success.png
+│   ├── 05-manager-update-sale.png
+│   ├── 06-manager-delete-sale.png
+│   ├── 07-customers-tab.png
+│   ├── 08-manager-update-customer.png
+│   ├── 09-manager-delete-customer.png
+│   ├── 10-employee-own-sales.png
+│   ├── 11-employee-no-buttons.png
+│   └── 12-sales-tab-view.png
+└── SalesDesktopApp/
 ├── Data/
-│   └── AppDbContext.cs          # EF Core database context
-├── Migrations/                  # Database migration files
+│   └── AppDbContext.cs         # EF Core database context
+├── Migrations/                 # Database migration files
 ├── Models/
-│   ├── User.cs                  # User entity with roles
-│   ├── Sale.cs                  # Sale transaction entity
-│   └── Customer.cs              # Customer entity
+│   ├── Customer.cs             # Customer entity
+│   ├── Sale.cs                 # Sale transaction entity
+│   └── User.cs                 # User entity with roles
 ├── Services/
-│   ├── AuthService.cs           # Authentication & authorization
-│   ├── SalesService.cs          # Sales business logic
-│   └── CustomerService.cs       # Customer business logic
-├── MainWindow.xaml              # Main application window
-├── LoginWindow.xaml             # Login screen
-├── RegisterWindow.xaml          # User registration
-├── App.xaml.cs                  # Application entry point
-├── appsettings.json             # Configuration (gitignored)
-└── appsettings.EXAMPLE.json     # Configuration template
+│   ├── AuthService.cs          # Authentication & authorization
+│   ├── CustomerService.cs      # Customer business logic
+│   └── SalesService.cs         # Sales business logic
+├── App.xaml
+├── App.xaml.cs                 # Application entry point
+├── AssemblyInfo.cs             # Assembly metadata
+├── LoginWindow.xaml
+├── LoginWindow.xaml.cs         # Login screen
+├── MainWindow.xaml
+├── MainWindow.xaml.cs          # Main application window
+├── RegisterWindow.xaml
+├── RegisterWindow.xaml.cs      # User registration
+├── SalesDesktopApp.csproj      # Project configuration
+└── appsettings.EXAMPLE.json    # Configuration template
 ```
 
 ---
